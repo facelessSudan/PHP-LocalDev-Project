@@ -8,52 +8,52 @@ I developed this guide to  help you run the entire Resume AI Agent project local
 - Node.js 16+ (for n8n)
 - SQLite (comes with PHP)
 - Local web server
-
+---
 ## Replace Cloud Services with Local Alternatives
-
+---
 ### 1. n8n (Local Installation)
 Instead of using n8n cloud, run it locally:
 
 ```bash
-# Install n8n globally
+- Install n8n globally
 npm install -g n8n
 
-# Start n8n
+- Start n8n
 n8n start
 
-# Access n8n at http://localhost:5678
+- Access n8n at http://localhost:5678
 ```
 
 ### 2. Google Sheets replaced by Local SQLite Database
-Create a local database to store applicant data:
+Create a local database to store applicant data.
 
 ### 3. Email Service replaced by Local Mail (using PHPMailer with MailHog)
 Install MailHog for local email testing:
 
 ```bash
-# On macOS
+- On macOS
 brew install mailhog
 
-# On Windows/Linux - Download from https://github.com/mailhog/MailHog
-# Start MailHog
+- On Windows/Linux - Download from https://github.com/mailhog/MailHog
+- Start MailHog
 mailhog
 
-# SMTP: localhost:1025
-# Web UI: http://localhost:8025
+- SMTP: localhost:1025
+- Web UI: http://localhost:8025
 ```
 
 ### 4. AI Scoring → Local LLM or Rule-Based Scoring
-Since it's for development, use a simple rule-based scoring system or local LLM:
+Since it's for development, use a simple rule-based scoring system or local LLM.
 
 #### Alternatively use Local LLM (I chose using Ollama)
 ```bash
-# Install Ollama
+- Install Ollama
 curl -fsSL https://ollama.ai/install.sh | sh
 
-# Pull a model
+- Pull a model
 ollama pull llama2
 
-# Run Ollama
+- Run Ollama
 ollama serve
 ```
 
@@ -94,8 +94,6 @@ PHP-Directory/
 └── README.md
 ```
 
-```
-
 ## n8n Workflow Configuration
 
 Create a local n8n workflow with these nodes:
@@ -112,16 +110,16 @@ Create a local n8n workflow with these nodes:
 
 1. **Start Local Services**:
 ```bash
-# Terminal 1: Start PHP server
+- Terminal 1: Start PHP server
 php -S localhost:8000 -t public
 
-# Terminal 2: Start n8n
+- Terminal 2: Start n8n
 n8n start
 
-# Terminal 3: Start MailHog
+- Terminal 3: Start MailHog
 mailhog
 
-# Terminal 4: Start Ollama (if using)
+- Terminal 4: Start Ollama (if using)
 ollama serve
 ```
 
