@@ -8,7 +8,7 @@ class DatabaseService {
     private $pdo;
 
     public function __construct() {
-        $dbPath = __DIR__ . '/../../database/recruitment.sqlite'; // adjust if needed
+        $dbPath = __DIR__ . '/../../database/recruitment.sqlite';
         try {
             $this->pdo = new PDO('sqlite:' . $dbPath);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
