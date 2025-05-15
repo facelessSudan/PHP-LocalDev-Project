@@ -32,7 +32,7 @@ A fully local, privacy-preserving Resume Screening AI Agent built with PHP, SQLi
 ---
 
 ##   Project Structure
-PHP-Directory/
+```PHP-Directory/
 ├── composer.json
 ├── .env
 ├── public/
@@ -57,6 +57,7 @@ PHP-Directory/
 ├── tests/
 │ └── test_local_workflow.php
 └── README.md
+```
 ---
 
 ##   Prerequisites
