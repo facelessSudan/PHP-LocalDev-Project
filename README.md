@@ -76,13 +76,13 @@ A fully local, privacy-preserving Resume Screening AI Agent built with PHP, SQLi
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-repo/local-resume-ai.git
+git clone https://github.com/PHP-LocalDev-Project/local-resume-ai.git
 cd local-resume-ai
 composer install
 ```
 
 ### 2. Start Local Services
-
+You can decide to open the terminals as stated below or run ```./start``` file as it automates the startup of local services. 
 ```bash
 # Terminal 1 - PHP Web Server
 php -S localhost:8000 -t public
