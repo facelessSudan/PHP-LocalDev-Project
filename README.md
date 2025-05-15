@@ -1,151 +1,164 @@
-# Local Resume AI Agent Setup
+#  Local Resume AI Agent
 
-I developed this guide to  help you run the entire Resume AI Agent project locally without any external services or subscriptions. This idea was informed by the fact that I needed to pay for a number of service subscritpions for my project to run on cloud.
+A fully local, privacy-preserving Resume Screening AI Agent built with PHP, SQLite, and n8n. This project mimics cloud functionality entirely offline — no API keys, no subscriptions, and full control over your data and workflows.
 
-## Prerequisites
+---
+
+##  Features
+
+- Resume upload form with local PDF storage
+- Rule-based or local LLM (Ollama) resume scoring
+- Local automation workflow via [n8n](https://n8n.io/)
+- Email notifications through [MailHog](https://github.com/mailhog/MailHog)
+- SQLite-powered applicant and job application database
+- Completely offline — no external services required
+- Educational test suite to validate local functionality
+
+---
+
+##  Tools & Technologies Used
+
+| Tool/Service     | Purpose                          |
+|------------------|----------------------------------|
+| **PHP 8.x**       | Core application logic           |
+| **Composer**      | Dependency management            |
+| **n8n (local)**   | Automation workflow engine       |
+| **SQLite**        | Local applicant database         |
+| **MailHog**       | Email testing tool (SMTP + UI)   |
+| **PHPMailer**     | Email sending from PHP           |
+| **Ollama** *(opt)*| Local AI LLM (e.g. LLaMA2)       |
+| **Node.js**       | Required for n8n                 |
+
+---
+
+##   Project Structure
+PHP-Directory/
+├── composer.json
+├── .env
+├── public/
+│ └── index.php
+├── src/
+│ ├── AIrecruitementAgent.php
+│ ├── webhook_handler.php
+│ ├── form_handler.php
+│ ├── views/
+│ │ └── application_form.php
+│ └── Services/
+│ ├── DatabaseService.php
+│ ├── LocalAIService.php
+│ ├── LocalMailService.php
+│ └── FileStorageService.php
+├── config/
+│ └── database.php
+├── database/
+│ └── recruitment.db
+├── uploads/
+├── logs/
+├── tests/
+│ └── test_local_workflow.php
+└── README.md
+---
+
+##   Prerequisites
+
 - PHP 8.x+
 - Composer
 - Node.js 16+ (for n8n)
-- SQLite (comes with PHP)
-- Local web server
+- MailHog
+- SQLite
+- Optional: [Ollama](https://ollama.com/) for running local LLMs
+
 ---
-## Replace Cloud Services with Local Alternatives
----
-### 1. n8n (Local Installation)
-Instead of using n8n cloud, run it locally:
+
+##   Setup Instructions
+
+### 1. Clone & Install
 
 ```bash
-- Install n8n globally
-npm install -g n8n
-
-- Start n8n
-n8n start
-
-- Access n8n at http://localhost:5678
+git clone https://github.com/your-repo/local-resume-ai.git
+cd local-resume-ai
+composer install
 ```
 
-### 2. Google Sheets replaced by Local SQLite Database
-Create a local database to store applicant data.
-
-### 3. Email Service replaced by Local Mail (using PHPMailer with MailHog)
-Install MailHog for local email testing:
+### 2. Start Local Services
 
 ```bash
-- On macOS
-brew install mailhog
-
-- On Windows/Linux - Download from https://github.com/mailhog/MailHog
-- Start MailHog
-mailhog
-
-- SMTP: localhost:1025
-- Web UI: http://localhost:8025
-```
-
-### 4. AI Scoring → Local LLM or Rule-Based Scoring
-Since it's for development, use a simple rule-based scoring system or local LLM.
-
-#### Alternatively use Local LLM (I chose using Ollama)
-```bash
-- Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-
-- Pull a model
-ollama pull llama2
-
-- Run Ollama
-ollama serve
-```
-
-## Folder Structure
-
-```
-PHP-Directory/
-├── composer.json
-├── composer.lock
-├── vendor/
-├── .env.local                    # Local environment config
-├── setup.sh
-├── public/
-│   ├── index.php
-│   └── .htaccess
-├── src/
-│   ├── AIrecruitementAgent.php
-│   ├── webhook_handler.php
-│   ├── form_handler.php
-│   ├── views/
-│   │   ├── application_form.php
-│   │   ├── thank_you_note.php
-│   │   └── error.php
-│   └── Services/
-│       ├── DatabaseService.php   # SQLite connection
-│       ├── LocalMailService.php  # PHPMailer with MailHog
-│       ├── LocalAIService.php    # Local AI scoring
-│       └── FileStorageService.php # Local file handling
-├── config/
-│   └── database.php
-├── database/
-│   └── recruitment.db
-├── logs/
-├── uploads/
-│   └── resumes/
-├── tests/
-│   └── test_local_workflow.php
-└── README.md
-```
-
-## n8n Workflow Configuration
-
-Create a local n8n workflow with these nodes:
-
-1. **Webhook Node**: Receive data from PHP
-2. **Function Node**: Parse resume and extract text
-3. **HTTP Request Node**: Call local AI service for scoring
-4. **IF Node**: Check if score meets threshold
-5. **Email Node**: Send to candidate (using MailHog)
-6. **Email Node**: Notify recruiter
-7. **SQLite Node**: Update database
-
-## Running the Project Locally
-
-1. **Start Local Services**:
-```bash
-- Terminal 1: Start PHP server
+# Terminal 1 - PHP Web Server
 php -S localhost:8000 -t public
 
-- Terminal 2: Start n8n
+# Terminal 2 - Start n8n
 n8n start
 
-- Terminal 3: Start MailHog
+# Terminal 3 - Start MailHog
 mailhog
 
-- Terminal 4: Start Ollama (if using)
+# Terminal 4 - Ollama (optional for LLM)
 ollama serve
 ```
 
-2. **Initialize Database**:
+### 3. Initialize Database
+
 ```bash
 sqlite3 database/recruitment.db < config/schema.sql
 ```
 
-3. **Configure n8n Workflow**:
+### 4. Configure Environment
+Create a .env file: (Am not hiding it to enable running of config environment)
+```bash
+APP_ENV=local
+APP_URL=http://localhost:8000
+APP_DEBUG=true
+
+N8N_WEBHOOK_URL=http://localhost:5678/webhook/resume-processing
+
+MAIL_HOST=localhost
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS=hr@localcompany.test
+MAIL_FROM_NAME="Local HR Department"
+
+DB_CONNECTION=sqlite
+DB_DATABASE=database/recruitment.db
+
+AI_SERVICE=local
+# Optional for LLM:
+# OLLAMA_API_URL=http://localhost:11434
+```
+
+### 5. Configure n8n Workflow
 - Open http://localhost:5678
-- Import the workflow JSON (provided)
-- Update webhook URL in PHP config
+- Import the provided JSON workflow
+- Update the webhook URL in your .env.local
 
-4. **Test the Application**:
-- Go to http://localhost:8000
-- Upload a test resume
-- Check MailHog at http://localhost:8025
-- View n8n execution at http://localhost:5678
+## Test Suite
+To validate that everything is running correctly:
+```bash
+php tests/test_local_workflow.php
+```
+This script will:
 
-## Advantages of This Local Setup
+- Insert dummy data into the database
+- Test AI scoring
+- Simulate an email send via MailHog
 
-1. **No External Dependencies**: Everything runs on your machine
-2. **No API Keys Required**: No need for Google, OpenAI, or other service credentials
-3. **Full Control**: Debug and modify any component
-4. **Cost-Free**: No subscription fees
-5. **Privacy**: All data stays on your local machine
-6. **Educational**: Perfect for learning and showcasing
+## For Demos (and probably presentation)
 
-This setup provides a complete, functional system that runs entirely on your local machine, perfect for a school project demonstration.
+- Upload a resume via http://localhost:8000
+- Show the workflow execution in n8n (localhost:5678)
+- Check emails in MailHog (localhost:8025)
+- Browse database with any SQLite viewer
+- Explain architecture and AI scoring logic
+
+## Benefits of Local Setup
+- Privacy: All data stays on your machine
+- Zero Cost: No subscriptions or paid APIs
+- Modular: Swap or extend components easily
+- Educational: Learn webhooks, LLMs, and automation
+- Fast: No external network latency
+- Testable: Includes local test suite
+
+## License
+This project is open-source and available under the MIT License.
+
+## Author
+Robert Okoba
+   
