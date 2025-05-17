@@ -40,8 +40,8 @@ if command -v node &> /dev/null; then
     if [ "$NODE_MAJOR" -lt "$REQUIRED_NODE_MAJOR" ] || \
        { [ "$NODE_MAJOR" -eq "$REQUIRED_NODE_MAJOR" ] && [ "$NODE_MINOR" -lt "$REQUIRED_NODE_MINOR" ]; } || \
        { [ "$NODE_MAJOR" -eq "$REQUIRED_NODE_MAJOR" ] && [ "$NODE_MINOR" -eq "$REQUIRED_NODE_MINOR" ] && [ "$NODE_PATCH" -lt "$REQUIRED_NODE_PATCH" ]; }; then
-        echo "❌ Node.js >= 20.18.1 is required. Found v$NODE_VERSION"
-        echo "📥 Installing Node.js 20.18.1 via nvm..."
+        echo " Node.js >= 20.18.1 is required. Found v$NODE_VERSION"
+        echo " Installing Node.js 20.18.1 via nvm..."
 
         if ! command -v nvm &> /dev/null; then
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -90,7 +90,7 @@ composer install
 
 # Install n8n locally (if not already installed)
 if [ ! -f node_modules/.bin/n8n ]; then
-    echo "📦 Installing n8n locally..."
+    echo " Installing n8n locally..."
     npm install n8n
 fi
 
@@ -139,34 +139,6 @@ INSERT INTO jobs (title, department, description, requirements) VALUES (
 EOF
 
 sqlite3 database/recruitment.db < config/schema.sql
-
-# Create .env.local file
-echo " Creating environment configuration..."
-cat > .env.local << 'EOF'
-# Local n8n webhook URL
-N8N_WEBHOOK_URL=http://localhost:5678/webhook/resume-processing
-
-# Local mail settings (MailHog)
-MAIL_HOST=localhost
-MAIL_PORT=1025
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_ENCRYPTION=
-MAIL_FROM_ADDRESS=hr@localcompany.test
-MAIL_FROM_NAME="Local HR Department"
-
-# Database
-DB_CONNECTION=sqlite
-DB_DATABASE=database/recruitment.db
-
-# AI Service
-AI_SERVICE=local
-
-# Application
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-EOF
 
 # Create start script
 echo " Creating start script..."
